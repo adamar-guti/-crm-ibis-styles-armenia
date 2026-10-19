@@ -222,6 +222,8 @@ INSERT INTO "canal" VALUES(1,'Digital');
 INSERT INTO "canal" VALUES(2,'Eventos');
 INSERT INTO "canal" VALUES(3,'Referidos');
 INSERT INTO "canal" VALUES(4,'Alianzas y relaciones públicas');
+INSERT INTO "canal" VALUES(5,'WhatsApp');
+INSERT INTO "canal" VALUES(6,'Meta (Facebook/Instagram)');
 CREATE TABLE ciudad(
   id_ciudad INTEGER PRIMARY KEY, nombre TEXT NOT NULL, pais TEXT NOT NULL, es_objetivo INTEGER NOT NULL CHECK(es_objetivo IN (0,1)), UNIQUE(nombre,pais));
 INSERT INTO "ciudad" VALUES(1,'Bogotá','Colombia',1);
@@ -1730,6 +1732,8 @@ INSERT INTO "tipo_interaccion" VALUES(5,'Visita al proyecto','Visita a la suite 
 INSERT INTO "tipo_interaccion" VALUES(6,'Solicitud de reunión','El lead pide reunión con un asesor');
 INSERT INTO "tipo_interaccion" VALUES(7,'Reunión realizada','Reunión efectiva con asesor');
 INSERT INTO "tipo_interaccion" VALUES(8,'Intento sin respuesta','Intento de contacto sin respuesta');
+INSERT INTO "tipo_interaccion" VALUES(9,'Conversación de WhatsApp','Conversación captada desde WhatsApp');
+INSERT INTO "tipo_interaccion" VALUES(10,'Formulario de Meta (Lead Ads)','Lead captado por formulario instantáneo (Lead Ads) de Meta');
 CREATE TABLE unidad(
   id_unidad INTEGER PRIMARY KEY, piso INTEGER NOT NULL, habitacion TEXT NOT NULL, area_m2 REAL NOT NULL, precio_lista_cop_m REAL NOT NULL,
   estado TEXT NOT NULL DEFAULT 'Disponible' CHECK(estado IN ('Disponible','Separada','Vendida')), UNIQUE(piso,habitacion));
