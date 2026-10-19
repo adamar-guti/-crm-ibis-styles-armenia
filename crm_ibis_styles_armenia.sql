@@ -2031,3 +2031,17 @@ FROM operacion o JOIN asesor a ON a.id_asesor=o.id_asesor GROUP BY a.id_asesor;
 
 -- 10. KPIs contra meta
 SELECT * FROM v_kpis;
+
+-- =====================================================================
+-- EXTENSION: observaciones e imagenes (evidencias) por accion
+-- =====================================================================
+ALTER TABLE interaccion ADD COLUMN observaciones TEXT;
+CREATE TABLE interaccion_imagen(
+  id_imagen INTEGER PRIMARY KEY,
+  id_interaccion INTEGER NOT NULL REFERENCES interaccion(id_interaccion) ON DELETE CASCADE,
+  nombre TEXT NOT NULL,
+  mime TEXT NOT NULL,
+  datos BLOB NOT NULL,
+  orden INTEGER NOT NULL DEFAULT 1);
+CREATE INDEX ix_interaccion_imagen_accion ON interaccion_imagen(id_interaccion);
+
