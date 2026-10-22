@@ -3607,6 +3607,7 @@ INSERT INTO "autorizacion_datos" VALUES(3597,3597,'2027-03-28','Formulario en ev
 INSERT INTO "autorizacion_datos" VALUES(3598,3598,'2027-06-08','Formulario en evento','Política de tratamiento v1.0',1,NULL);
 INSERT INTO "autorizacion_datos" VALUES(3599,3599,'2027-02-19','Formulario en evento','Política de tratamiento v1.0',1,NULL);
 INSERT INTO "autorizacion_datos" VALUES(3600,3600,'2027-06-07','Formulario en evento','Política de tratamiento v1.0',1,NULL);
+INSERT INTO "autorizacion_datos" VALUES(3601,3601,'2026-10-22','WhatsApp','Política de tratamiento v1.0',1,NULL);
 CREATE TABLE campana(
   id_campana INTEGER PRIMARY KEY, nombre TEXT NOT NULL UNIQUE, fecha_inicio TEXT NOT NULL, fecha_fin TEXT NOT NULL,
   presupuesto_cop_m REAL NOT NULL, meta_leads INTEGER NOT NULL, meta_ventas INTEGER NOT NULL, CHECK(fecha_fin>=fecha_inicio));
@@ -7246,6 +7247,7 @@ INSERT INTO "cliente" VALUES(3597,'Andrés','Henao','andrés.henao3597@outlook.c
 INSERT INTO "cliente" VALUES(3598,'Martín','Martínez','martín.martínez3598@live.com','+57 315 609 676 4',6,3,4,'1 año a 3 años',0,7,5,NULL,'2027-06-08',0,NULL,6);
 INSERT INTO "cliente" VALUES(3599,'Andrés','Valencia','andrés.valencia3599@outlook.com','+57 318 162 666 6',7,2,1,'1 año a 3 años',1,2,4,NULL,'2027-02-19',0,4,3);
 INSERT INTO "cliente" VALUES(3600,'Carolina','Arias','carolina.arias3600@gmail.com','+57 319 604 661 3',1,1,1,'0 a 3 meses',1,1,2,NULL,'2027-06-07',0,3,1);
+INSERT INTO "cliente" VALUES(3601,'Cliente','WhatsApp','wa-573002331760@pendiente.local','+57 300 233 1760',1,1,1,NULL,0,5,1,NULL,'2026-10-22',0,NULL,1);
 CREATE TABLE criterio_puntaje(id_criterio INTEGER PRIMARY KEY, clave TEXT NOT NULL UNIQUE, descripcion TEXT NOT NULL, puntos INTEGER NOT NULL);
 INSERT INTO "criterio_puntaje" VALUES(1,'reunion','Solicita reunión o visita',25);
 INSERT INTO "criterio_puntaje" VALUES(2,'capacidad','Capacidad de inversión igual o mayor a COP 370 millones',25);
@@ -13390,6 +13392,7 @@ INSERT INTO "interaccion" VALUES(6121,3599,6,'2027-02-19',NULL,4,'Interacción g
 INSERT INTO "interaccion" VALUES(6122,3600,3,'2027-06-07',NULL,3,'Interacción generada automáticamente');
 INSERT INTO "interaccion" VALUES(6123,3600,6,'2027-06-07',NULL,3,'Interacción generada automáticamente');
 INSERT INTO "interaccion" VALUES(6124,3600,5,'2027-06-07',NULL,3,'Interacción generada automáticamente');
+INSERT INTO "interaccion" VALUES(6125,3601,9,'2026-10-22',NULL,NULL,NULL);
 CREATE TABLE interaccion_imagen(
   id_imagen INTEGER PRIMARY KEY,
   id_interaccion INTEGER NOT NULL REFERENCES interaccion(id_interaccion) ON DELETE CASCADE,
@@ -13494,7 +13497,6 @@ INSERT INTO "operacion" VALUES(5,155,179,'Opción','2027-08-26',402.0,1);
 CREATE TABLE parametro(clave TEXT PRIMARY KEY, valor REAL NOT NULL, descripcion TEXT NOT NULL);
 INSERT INTO "parametro" VALUES('umbral_caliente',70.0,'Puntaje mínimo para lead caliente');
 INSERT INTO "parametro" VALUES('umbral_tibio',40.0,'Puntaje mínimo para lead tibio');
-INSERT INTO "parametro" VALUES('meta_leads',6000.0,'Meta de leads en 12 meses');
 INSERT INTO "parametro" VALUES('meta_ventas',72.0,'Meta de suites vendidas en 12 meses (6 por mes)');
 INSERT INTO "parametro" VALUES('meta_conversion',0.02,'Meta de conversion: 72 ventas / 3600 leads (2%)');
 INSERT INTO "parametro" VALUES('meta_referidos',0.1,'Meta de participación de referidos');
@@ -13502,8 +13504,9 @@ INSERT INTO "parametro" VALUES('presupuesto_cop_m',1230.0,'Presupuesto total de 
 INSERT INTO "parametro" VALUES('meta_ventas_mensual',6.0,'Meta de suites vendidas por mes');
 INSERT INTO "parametro" VALUES('valor_suite_cop_m',350.0,'Precio promedio por suite (COP millones)');
 INSERT INTO "parametro" VALUES('meta_valor_mensual_cop_m',2100.0,'Valor presupuestado de ventas por mes (6 x 350), en COP millones');
-INSERT INTO "parametro" VALUES('meta_canal_meta',0.4,'Meta de participacion de leads desde el formulario de Meta Business');
-INSERT INTO "parametro" VALUES('meta_canal_whatsapp',0.6,'Meta de participacion de leads desde WhatsApp');
+INSERT INTO "parametro" VALUES('meta_leads',3600.0,'Meta de leads en 12 meses (base de 3600)');
+INSERT INTO "parametro" VALUES('meta_canal_meta',0.6,'Meta de participacion de leads desde el formulario de Meta Business');
+INSERT INTO "parametro" VALUES('meta_canal_whatsapp',0.4,'Meta de participacion de leads desde WhatsApp');
 CREATE TABLE rango_inversion(
   id_rango INTEGER PRIMARY KEY, descripcion TEXT NOT NULL UNIQUE, minimo_cop_m REAL NOT NULL, cumple_capacidad INTEGER NOT NULL CHECK(cumple_capacidad IN (0,1)));
 INSERT INTO "rango_inversion" VALUES(1,'Menos de 370 M',0.0,0);
