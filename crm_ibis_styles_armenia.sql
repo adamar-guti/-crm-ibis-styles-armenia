@@ -13498,7 +13498,7 @@ CREATE TABLE parametro(clave TEXT PRIMARY KEY, valor REAL NOT NULL, descripcion 
 INSERT INTO "parametro" VALUES('umbral_caliente',70.0,'Puntaje mínimo para lead caliente');
 INSERT INTO "parametro" VALUES('umbral_tibio',40.0,'Puntaje mínimo para lead tibio');
 INSERT INTO "parametro" VALUES('meta_ventas',72.0,'Meta de suites vendidas en 12 meses (6 por mes)');
-INSERT INTO "parametro" VALUES('meta_conversion',0.02,'Meta de conversion: 72 ventas / 3600 leads (2%)');
+INSERT INTO "parametro" VALUES('meta_conversion',0.016,'Meta de conversion: 72 ventas / 3600 leads (2%)');
 INSERT INTO "parametro" VALUES('meta_referidos',0.1,'Meta de participación de referidos');
 INSERT INTO "parametro" VALUES('presupuesto_cop_m',1230.0,'Presupuesto total de marketing (COP millones)');
 INSERT INTO "parametro" VALUES('meta_ventas_mensual',6.0,'Meta de suites vendidas por mes');
