@@ -7263,8 +7263,8 @@ INSERT INTO "etapa" VALUES(1,'Lead',1,NULL);
 INSERT INTO "etapa" VALUES(2,'Lead calificado (MQL)',2,0.4);
 INSERT INTO "etapa" VALUES(3,'Oportunidad (SQL)',3,0.5);
 INSERT INTO "etapa" VALUES(4,'Reunión o visita',4,0.5);
-INSERT INTO "etapa" VALUES(5,'Opción o separación',5,0.25);
-INSERT INTO "etapa" VALUES(6,'Venta',6,0.6);
+INSERT INTO "etapa" VALUES(5,'Opción o separación',5,0.4);
+INSERT INTO "etapa" VALUES(6,'Venta',6,0.5);
 CREATE TABLE interaccion(
   id_interaccion INTEGER PRIMARY KEY, id_cliente INTEGER NOT NULL REFERENCES cliente(id_cliente) ON DELETE CASCADE,
   id_tipo INTEGER NOT NULL REFERENCES tipo_interaccion(id_tipo), fecha TEXT NOT NULL, valor REAL, id_asesor INTEGER REFERENCES asesor(id_asesor), observaciones TEXT);
@@ -13769,12 +13769,6 @@ SELECT p.*, CASE WHEN p.solicito_baja=1 THEN 'Baja'
   WHEN p.puntaje>=(SELECT valor FROM parametro WHERE clave='umbral_caliente') THEN 'Caliente'
   WHEN p.puntaje>=(SELECT valor FROM parametro WHERE clave='umbral_tibio') THEN 'Tibio' ELSE 'Frío' END AS clasificacion
 FROM v_puntaje p;
-CREATE VIEW v_embudo AS
-SELECT orden, etapa, llegaron AS leads_que_llegaron,
-  ROUND(1.0*llegaron/LAG(llegaron) OVER (ORDER BY orden),3) AS conversion_real, conversion_meta
-FROM (SELECT e.orden, e.nombre AS etapa, e.conversion_meta,
-        (SELECT COUNT(*) FROM cliente c JOIN etapa e2 ON e2.id_etapa=c.id_etapa WHERE e2.orden>=e.orden) AS llegaron
-      FROM etapa e) ORDER BY orden;
 CREATE VIEW v_canal AS
 SELECT ca.nombre AS canal, COUNT(c.id_cliente) AS leads,
   SUM(CASE WHEN e.orden>=2 THEN 1 ELSE 0 END) AS calificados,
@@ -13830,4 +13824,17 @@ UNION ALL
 SELECT 'Clientes con autorización vigente o revocada documentada',
        ROUND(1.0*(SELECT COUNT(DISTINCT id_cliente) FROM autorizacion_datos)/COUNT(*), 4), 1
   FROM cliente;
+CREATE VIEW v_embudo AS
+WITH RECURSIVE base(orden, etapa, leads_meta, conversion_acumulada, conversion_meta) AS (
+  SELECT 1, 'Lead', COUNT(*), 1.0, NULL FROM cliente
+  UNION ALL
+  SELECT e.orden, e.nombre,
+         CAST(ROUND(b.leads_meta * e.conversion_meta, 0) AS INTEGER),
+         ROUND(b.conversion_acumulada * e.conversion_meta, 3), e.conversion_meta
+  FROM base b JOIN etapa e ON e.orden = b.orden + 1
+)
+SELECT orden, etapa, leads_meta,
+       CASE WHEN orden = 1 THEN NULL ELSE conversion_acumulada END AS conversion_acumulada,
+       conversion_meta
+FROM base ORDER BY orden;
 COMMIT;
