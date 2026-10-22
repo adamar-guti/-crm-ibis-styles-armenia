@@ -13495,10 +13495,15 @@ CREATE TABLE parametro(clave TEXT PRIMARY KEY, valor REAL NOT NULL, descripcion 
 INSERT INTO "parametro" VALUES('umbral_caliente',70.0,'Puntaje mínimo para lead caliente');
 INSERT INTO "parametro" VALUES('umbral_tibio',40.0,'Puntaje mínimo para lead tibio');
 INSERT INTO "parametro" VALUES('meta_leads',6000.0,'Meta de leads en 12 meses');
-INSERT INTO "parametro" VALUES('meta_ventas',90.0,'Meta de suites vendidas');
-INSERT INTO "parametro" VALUES('meta_conversion',0.015,'Meta de conversión lead a venta');
+INSERT INTO "parametro" VALUES('meta_ventas',72.0,'Meta de suites vendidas en 12 meses (6 por mes)');
+INSERT INTO "parametro" VALUES('meta_conversion',0.02,'Meta de conversion: 72 ventas / 3600 leads (2%)');
 INSERT INTO "parametro" VALUES('meta_referidos',0.1,'Meta de participación de referidos');
 INSERT INTO "parametro" VALUES('presupuesto_cop_m',1230.0,'Presupuesto total de marketing (COP millones)');
+INSERT INTO "parametro" VALUES('meta_ventas_mensual',6.0,'Meta de suites vendidas por mes');
+INSERT INTO "parametro" VALUES('valor_suite_cop_m',350.0,'Precio promedio por suite (COP millones)');
+INSERT INTO "parametro" VALUES('meta_valor_mensual_cop_m',2100.0,'Valor presupuestado de ventas por mes (6 x 350), en COP millones');
+INSERT INTO "parametro" VALUES('meta_canal_meta',0.4,'Meta de participacion de leads desde el formulario de Meta Business');
+INSERT INTO "parametro" VALUES('meta_canal_whatsapp',0.6,'Meta de participacion de leads desde WhatsApp');
 CREATE TABLE rango_inversion(
   id_rango INTEGER PRIMARY KEY, descripcion TEXT NOT NULL UNIQUE, minimo_cop_m REAL NOT NULL, cumple_capacidad INTEGER NOT NULL CHECK(cumple_capacidad IN (0,1)));
 INSERT INTO "rango_inversion" VALUES(1,'Menos de 370 M',0.0,0);
@@ -13795,10 +13800,34 @@ CREATE VIEW v_clasificacion_resumen AS
 SELECT clasificacion, COUNT(*) AS registros, ROUND(1.0*COUNT(*)/(SELECT COUNT(*) FROM cliente),3) AS participacion
 FROM v_clasificacion GROUP BY clasificacion;
 CREATE VIEW v_kpis AS
-SELECT 'Leads en la base' AS kpi, COUNT(*) AS valor, (SELECT valor FROM parametro WHERE clave='meta_leads') AS meta FROM cliente
-UNION ALL SELECT 'Suites vendidas', COUNT(*), (SELECT valor FROM parametro WHERE clave='meta_ventas') FROM operacion WHERE tipo IN ('Promesa','Escritura')
-UNION ALL SELECT 'Conversión lead a venta', ROUND(1.0*(SELECT COUNT(*) FROM operacion WHERE tipo IN ('Promesa','Escritura'))/COUNT(*),4), (SELECT valor FROM parametro WHERE clave='meta_conversion') FROM cliente
-UNION ALL SELECT 'Leads por referidos', ROUND(1.0*SUM(CASE WHEN id_canal=(SELECT id_canal FROM canal WHERE nombre='Referidos') THEN 1 ELSE 0 END)/COUNT(*),4), (SELECT valor FROM parametro WHERE clave='meta_referidos') FROM cliente
-UNION ALL SELECT 'Clientes con autorización vigente o revocada documentada', ROUND(1.0*(SELECT COUNT(DISTINCT id_cliente) FROM autorizacion_datos)/COUNT(*),4), 1 FROM cliente
-UNION ALL SELECT 'Valor vendido (COP millones)', ROUND(COALESCE(SUM(valor_cop_m),0),1), NULL FROM operacion WHERE tipo IN ('Promesa','Escritura');
+SELECT 'Leads en la base' AS kpi, COUNT(*) AS valor,
+       (SELECT valor FROM parametro WHERE clave='meta_leads') AS meta
+  FROM cliente
+UNION ALL
+SELECT 'Ventas (meta mensual)',
+       (SELECT valor FROM parametro WHERE clave='meta_ventas_mensual'), NULL
+UNION ALL
+SELECT 'Ventas (meta anual)',
+       (SELECT valor FROM parametro WHERE clave='meta_ventas'), NULL
+UNION ALL
+SELECT 'Inventario a vender (meta)',
+       ROUND(1.0*(SELECT valor FROM parametro WHERE clave='meta_ventas')
+             /(SELECT COUNT(*) FROM unidad), 4), NULL
+UNION ALL
+SELECT 'Conversión lead a venta (meta)',
+       (SELECT valor FROM parametro WHERE clave='meta_conversion'), NULL
+UNION ALL
+SELECT 'Leads por Meta Business (meta)',
+       (SELECT valor FROM parametro WHERE clave='meta_canal_meta'), NULL
+UNION ALL
+SELECT 'Leads por WhatsApp (meta)',
+       (SELECT valor FROM parametro WHERE clave='meta_canal_whatsapp'), NULL
+UNION ALL
+SELECT 'Valor vendido (meta mensual, COP millones)',
+       (SELECT valor FROM parametro WHERE clave='meta_ventas_mensual')
+       * (SELECT valor FROM parametro WHERE clave='valor_suite_cop_m'), NULL
+UNION ALL
+SELECT 'Clientes con autorización vigente o revocada documentada',
+       ROUND(1.0*(SELECT COUNT(DISTINCT id_cliente) FROM autorizacion_datos)/COUNT(*), 4), 1
+  FROM cliente;
 COMMIT;
