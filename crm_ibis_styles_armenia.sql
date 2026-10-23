@@ -6070,7 +6070,7 @@ INSERT INTO "unidad" VALUES(20,4,'HAB-03',24.41,395.0,'Disponible');
 INSERT INTO "unidad" VALUES(21,4,'HAB-04',23.09,374.0,'Disponible');
 INSERT INTO "unidad" VALUES(22,4,'HAB-05',25.72,416.5,'Disponible');
 INSERT INTO "unidad" VALUES(23,4,'HAB-06',25.72,416.5,'Disponible');
-INSERT INTO "unidad" VALUES(24,4,'HAB-07',23.09,374.0,'Vendida');
+INSERT INTO "unidad" VALUES(24,4,'HAB-07',23.09,374.0,'Disponible');
 INSERT INTO "unidad" VALUES(25,4,'HAB-08',24.41,395.0,'Vendida');
 INSERT INTO "unidad" VALUES(26,4,'HAB-09',24.28,393.0,'Disponible');
 INSERT INTO "unidad" VALUES(27,4,'HAB-10',22.91,371.0,'Disponible');
